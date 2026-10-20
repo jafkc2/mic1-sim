@@ -18,3 +18,8 @@ git clone https://github.com/jafkc2/mic1-sim.git
 ```
 
 será solicitado o seu nome de usuário do github e o seu token de acesso.
+
+
+## Dependências do python
+
+* customtkinter
