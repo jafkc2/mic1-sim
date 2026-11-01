@@ -1,7 +1,12 @@
 import customtkinter
 
-app = customtkinter.CTk()
-app.geometry("854x480")
-app.resizable(False, False)
+from cpu.cpu import CPU
+from app import App
 
-app.mainloop()
+def main():
+    cpu = CPU()
+    app = App(cpu)
+
+    app.mainloop()
+
+main()
