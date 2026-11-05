@@ -3,27 +3,22 @@ Simulador gráfico da microarquitetura MIC-1
 
 ## Roadmap
 
-[ ] Montador
+- [ ] Montador
 
 -----------------------
 
 Subclasses da classe CPU:
 
-[ ] DataPath e registradores
-
-[ ] ULA
-
-[ ] Shifter
-
-[ ] Unidade de controle
-
-[ ] Memória
-
-[ ] Cache
+- [ ] DataPath e registradores
+- [ ] ULA
+- [ ] Shifter
+- [ ] Unidade de controle
+- [ ] Memória
+- [ ] Cache
 
 -----------------------
 
-[ ] Interface gráfica
+- [ ] Interface gráfica
 
 
 ## Como baixar o repositório
