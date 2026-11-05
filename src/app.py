@@ -11,7 +11,7 @@ class App(ctk.CTk):
         self.mostrar_registradores()
 
     def mostrar_registradores(self):
-        registradores = self.cpu.registradores.get_registradores()
+        registradores = self.cpu.data_path.get_registradores()
         for i, valor in registradores.items():
             ctk.CTkLabel(self, text=f"Registrador {i}: {valor}").pack()
             

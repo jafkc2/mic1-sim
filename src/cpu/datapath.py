@@ -1,4 +1,4 @@
-class Registradores:
+class DataPath:
     def __init__(self):
         self.pc = 0
         self.ac = 0

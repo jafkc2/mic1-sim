@@ -1,6 +1,31 @@
 # mic1-sim
 Simulador gráfico da microarquitetura MIC-1
 
+## Roadmap
+
+[ ] Montador
+
+-----------------------
+
+Subclasses da classe CPU:
+
+[ ] DataPath e registradores
+
+[ ] ULA
+
+[ ] Shifter
+
+[ ] Unidade de controle
+
+[ ] Memória
+
+[ ] Cache
+
+-----------------------
+
+[ ] Interface gráfica
+
+
 ## Como baixar o repositório
 
 #### Requisitos
