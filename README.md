@@ -3,7 +3,7 @@ Simulador gráfico da microarquitetura MIC-1
 
 ## Roadmap
 
-- [ ] Montador
+- [x] Montador
 
 -----------------------
 
@@ -13,7 +13,7 @@ Subclasses da classe CPU:
 - [ ] ULA
 - [ ] Shifter
 - [ ] Unidade de controle
-- [ ] Memória
+- [x] Memória
 - [ ] Cache
 
 -----------------------

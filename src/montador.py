@@ -1,3 +1,5 @@
+import re
+
 opcodes_12 = {
     "LODD": 0b0000000000000000,
     "STOD": 0b0001000000000000,
@@ -31,49 +33,156 @@ opcodes_0 = {
 }
 
 
-def obter_linhas(codigo: str):
-    # necessário: limapr o código de comentários, linhas em branco, etc. 
-    return codigo.splitlines()
+class ErroMontagem(Exception):
+    def __init__(self, mensagem, linha=None, numero_linha=None):
+        super().__init__(mensagem)
+        self.mensagem = mensagem
+        self.linha = linha
+        self.numero_linha = numero_linha
+
+    def __str__(self):
+        if self.numero_linha is not None:
+            return f"Linha {self.numero_linha}: {self.mensagem}"
+        return self.mensagem
+
+
+ErroAssembler = ErroMontagem
+
+
+def obter_linhas(codigo):
+    linhas = []
+    dentro_de_comentario = False
+
+    for numero, linha in enumerate(codigo.splitlines(), 1):
+        texto = ""
+        indice = 0
+
+        while indice < len(linha):
+            if dentro_de_comentario:
+                fim = linha.find("*/", indice)
+                if fim == -1:
+                    indice = len(linha)
+                else:
+                    dentro_de_comentario = False
+                    indice = fim + 2
+                continue
+
+            inicio = linha.find("/*", indice)
+            trecho = linha[indice:] if inicio == -1 else linha[indice:inicio]
+
+            for marcador in ("//", "#", ";"):
+                posicao = trecho.find(marcador)
+                if posicao != -1:
+                    trecho = trecho[:posicao]
+
+            texto += trecho
+
+            if inicio == -1:
+                break
+
+            dentro_de_comentario = True
+            indice = inicio + 2
+
+        texto = texto.strip()
+        if texto:
+            linhas.append((numero, texto))
+
+    if dentro_de_comentario:
+        raise ErroMontagem("Comentário não fechado.")
+
+    return linhas
+
+
+def _erro(mensagem, numero_linha, linha):
+    return ErroMontagem(mensagem, linha=linha, numero_linha=numero_linha)
+
+
+def _numero(texto, numero_linha, linha):
+    try:
+        if texto.lower().startswith(("0x", "0b", "0o")):
+            return int(texto, 0)
+        return int(texto, 10)
+    except ValueError:
+        raise _erro(f"Operando invalido: '{texto}'", numero_linha, linha)
+
 
 def montar(codigo_assembly):
-    # sem suporte a labels por enquanto. Deve funcionar apenas para programas bem simples.
-    # Código bem ruim, refaço dps
-
     memoria = [0] * 4096
     linhas = obter_linhas(codigo_assembly)
+    labels = {}
     endereco = 0
 
-    for num, linha in enumerate(linhas):
-        a = linha.split()
+    # primeira passagem para encontrar labels
+    for numero, linha in linhas:
+        texto = linha
+        while ":" in texto:
+            nome, resto = texto.split(":", 1)
+            nome = nome.strip()
+            if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", nome):
+                raise _erro("Nome de label invalido", numero, linha)
+            if nome in labels:
+                raise _erro(f"Label '{nome}' ja foi definida", numero, linha)
+            labels[nome] = endereco
+            texto = resto.strip()
+            if not texto:
+                break
 
-        nome = a[0]
+        if not texto:
+            continue
+
+        nome = texto.split()[0].upper()
+        if nome not in opcodes_12 and nome not in opcodes_8 and nome not in opcodes_0:
+            raise _erro(f"Instrucao invalida: '{nome}'", numero, linha)
+        if endereco >= len(memoria):
+            raise _erro("Programa ultrapassa os limites da memoria", numero, linha)
+        endereco += 1
+
+    # segunda passagem para palavras
+    endereco = 0
+    for numero, linha in linhas:
+        texto = linha
+        while ":" in texto:
+            nome, resto = texto.split(":", 1)
+            nome = nome.strip()
+            if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", nome):
+                texto = resto.strip()
+                if not texto:
+                    break
+                continue
+            break
+
+        if not texto:
+            continue
+
+        partes = texto.split()
+        nome = partes[0].upper()
+
         if nome in opcodes_12:
-            if len(a) < 2:
-                print(f"Erro na linha {num}: operando faltando")
-            operando = int(a[1])
-
-            if not (0 <= operando <= 0xfff):
-                print(f"Erro na linha {num}: O operando possui tamanho incompatível")
-
-            palavra = opcodes_12[nome] + operando   
+            if len(partes) != 2:
+                raise _erro(f"'{nome}' exige um operando", numero, linha)
+            operando_texto = partes[1]
+            if operando_texto in labels:
+                operando = labels[operando_texto]
+            elif re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", operando_texto):
+                raise _erro(f"Label nao definida: '{operando_texto}'", numero, linha)
+            else:
+                operando = _numero(operando_texto, numero, linha)
+            if not 0 <= operando <= 0xFFF:
+                raise _erro("Operando fora do intervalo de 12 bits", numero, linha)
+            palavra = opcodes_12[nome] | operando
         elif nome in opcodes_8:
-            if len(a) < 2:
-                print(f"Erro na linha {num}: operando faltando")
-            operando = int(a[1])
-
-            if not (0 <= operando <= 0xff):
-                print(f"Erro na linha {num}: O operando possui tamanho incompatível")
-
-            palavra = opcodes_8[nome] + operando
-        elif nome in opcodes_0:
-            if len(a) > 1:
-                print(f"Erro na linha {num}: a operação não aceita operando")
-            palavra = opcodes_0[nome]
+            if len(partes) != 2:
+                raise _erro(f"'{nome}' exige um operando", numero, linha)
+            operando = _numero(partes[1], numero, linha)
+            if not 0 <= operando <= 0xFF:
+                raise _erro("Operando fora do intervalo de 8 bits", numero, linha)
+            palavra = opcodes_8[nome] | operando
         else:
-            print(f"Linha inválida: {num}")
+            if len(partes) != 1:
+                raise _erro(f"'{nome}' nao aceita operando", numero, linha)
+            palavra = opcodes_0[nome]
 
         memoria[endereco] = palavra
         endereco += 1
-
 
     return memoria
