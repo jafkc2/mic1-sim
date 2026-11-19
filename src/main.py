@@ -1,5 +1,3 @@
-import customtkinter
-
 from cpu.cpu import CPU
 from app import App
 
