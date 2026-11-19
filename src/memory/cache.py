@@ -87,7 +87,7 @@ class CacheMapeamentoDireto:
                 "inicio_bloco": inicio_bloco}
 
 
-    #VER SE ALGUM ELEMENTO ESTA NA CHACHE
+    #VER SE ALGUM ELEMENTO ESTA NA CACHE
     def _localizar(self, endereco: int) -> tuple[LinhaCache, DetalhesCache]:
         indice, tag, deslocamento, inicio_bloco = self._partes(endereco)
         linha = self.linhas[indice]

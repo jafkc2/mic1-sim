@@ -29,20 +29,12 @@ class ResultadoAcesso:
 
 
 class ControladorMemoria:
-    def __init__(
-        self,
-        ram: MemoriaRAM | None = None,
-        *,
-        ciclos_cache: int = CICLOS_CONSULTA_CACHE,
-        ciclos_ram: int = CICLOS_ACESSO_RAM,
-    ) -> None:
-        if any(type(c) is not int or c < 1 for c in (ciclos_cache, ciclos_ram)):
-            raise ValueError("Latencias devem ser inteiros positivos.")
-        self.ram = ram if ram is not None else MemoriaRAM()
+    def __init__(self) -> None:
+        self.ram = MemoriaRAM()
         self.icache = CacheMapeamentoDireto(self.ram, nome="I", somente_leitura=True)
         self.dcache = CacheMapeamentoDireto(self.ram, nome="D")
-        self.ciclos_cache = ciclos_cache
-        self.ciclos_ram = ciclos_ram
+        self.ciclos_cache = CICLOS_CONSULTA_CACHE
+        self.ciclos_ram = CICLOS_ACESSO_RAM
         self.ultimo_acesso: ResultadoAcesso | None = None
 
     def _resultado(self, tipo_cache: str, operacao: str, valor: int,
