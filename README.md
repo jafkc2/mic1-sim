@@ -10,8 +10,8 @@ Simulador gráfico da microarquitetura MIC-1
 Subclasses da classe CPU:
 
 - [ ] DataPath e registradores
-- [ ] ULA
-- [ ] Shifter
+- [x] ULA
+- [x] Shifter
 - [ ] Unidade de controle
 - [x] Memória
 - [ ] Cache

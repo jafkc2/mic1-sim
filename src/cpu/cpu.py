@@ -15,7 +15,7 @@ class CPU:
     def executar_ciclo(self):
         pass
 
-    def carregar_programa(self, programa):
+    def carregar_programa(self, programa: str):
         if programa is None:
             return
 
