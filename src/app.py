@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from cpu.cpu import CPU
 from telas.tela_principal import TelaPrincipal
 
 
@@ -7,7 +8,7 @@ class App(ctk.CTk):
         ctk.set_appearance_mode("dark")
 
         super().__init__()
-        self.cpu = cpu
+        self.cpu : CPU = cpu
         self.title("MIC-1 Sim")
         self.geometry("1000x650")
         self.resizable(True, True)

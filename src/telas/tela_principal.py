@@ -1,4 +1,6 @@
 import customtkinter as ctk
+
+from cpu.cpu import CPU
 from .painel_codigo import PainelCodigo
 from .painel_controle import PainelControle
 from .painel_estado_cpu import PainelEstadoCPU
@@ -9,7 +11,7 @@ from .painel_registradores import PainelRegistradores
 class TelaPrincipal(ctk.CTkFrame):
     def __init__(self, master, cpu):
         super().__init__(master)
-        self.cpu = cpu
+        self.cpu : CPU = cpu
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)

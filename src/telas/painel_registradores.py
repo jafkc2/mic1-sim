@@ -1,10 +1,12 @@
 import customtkinter as ctk
 
+from cpu.cpu import CPU
+
 
 class PainelRegistradores(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
-        self.cpu = master.cpu
+        self.cpu : CPU = master.cpu
         self.labels = {}
 
         ctk.CTkLabel(self, text="Registradores", font=ctk.CTkFont(size=18, weight="bold")).grid(

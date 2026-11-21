@@ -1,10 +1,12 @@
 import customtkinter as ctk
 
+from cpu.cpu import CPU
+
 
 class PainelCodigo(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
-        self.cpu = master.cpu
+        self.cpu : CPU = master.cpu
 
         ctk.CTkLabel(self, text="Programa Assembly", font=ctk.CTkFont(size=18, weight="bold")).grid(
             row=0, column=0, columnspan=2, pady=(10, 5), sticky="w"

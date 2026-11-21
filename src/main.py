@@ -1,11 +1,8 @@
 from cpu.cpu import CPU
 from app import App
 
-def main():
+if __name__ == "__main__":
     cpu = CPU()
     app = App(cpu)
     
     app.mainloop()
-
-if __name__ == "__main__":
-    main()
