@@ -45,10 +45,6 @@ class ErroMontagem(Exception):
             return f"Linha {self.numero_linha}: {self.mensagem}"
         return self.mensagem
 
-
-ErroAssembler = ErroMontagem
-
-
 def obter_linhas(codigo):
     if not isinstance(codigo, str):
         raise ErroMontagem("O codigo Assembly deve ser uma string.")

@@ -4,6 +4,8 @@ from telas.tela_principal import TelaPrincipal
 
 class App(ctk.CTk):
     def __init__(self, cpu):
+        ctk.set_appearance_mode("dark")
+
         super().__init__()
         self.cpu = cpu
         self.title("MIC-1 Sim")
