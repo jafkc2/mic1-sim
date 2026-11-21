@@ -1,9 +1,11 @@
+#mudei
+
 from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
 
-from memory.config import BITS_PALAVRA, MASCARA_PALAVRA
+from memory.config import BITS_PALAVRA
 
 
 class OperacaoULA(str, Enum):
@@ -20,6 +22,7 @@ class OperacaoULA(str, Enum):
     DEC_A = "DEC_A"  # A - 1
 
 
+@dataclass(frozen=True)
 class ResultadoULA:
     operacao: OperacaoULA
     a: int
@@ -35,7 +38,7 @@ class ULA:
         if type(largura_bits) is not int or largura_bits <= 0:
             raise ValueError("largura_bits deve ser um inteiro positivo.")
         self.largura_bits = largura_bits
-        self.mascara = (1 << largura_bits) - 1 if largura_bits == BITS_PALAVRA else MASCARA_PALAVRA
+        self.mascara = (1 << largura_bits) - 1
         self.bit_sinal = 1 << (largura_bits - 1)
         self.ultimo_resultado: ResultadoULA | None = None
 
@@ -47,6 +50,8 @@ class ULA:
     def _resolver_operacao(self, operacao: OperacaoULA | str) -> OperacaoULA:
         if isinstance(operacao, OperacaoULA):
             return operacao
+        if not isinstance(operacao, str):
+            raise TypeError("A operação da ULA deve ser um código válido ou uma string.")
         chave = operacao.strip().upper()
         aliases = {
             "+": OperacaoULA.ADD,

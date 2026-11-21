@@ -1,3 +1,5 @@
+#mudei
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -27,7 +29,7 @@ class Shifter:
         if type(largura_bits) is not int or largura_bits <= 0:
             raise ValueError("largura_bits deve ser um inteiro positivo.")
         self.largura_bits = largura_bits
-        self.mascara = (1 << largura_bits) - 1 if largura_bits == BITS_PALAVRA else MASCARA_PALAVRA
+        self.mascara = (1 << largura_bits) - 1
         self.bit_sinal = 1 << (largura_bits - 1)
         self.ultimo_resultado: ResultadoShifter | None = None
 
@@ -36,11 +38,14 @@ class Shifter:
             raise TypeError("A entrada do Shifter deve ser um inteiro.")
         return valor & self.mascara
 
+    @staticmethod
     def _resolver_operacao(operacao: OperacaoShifter | str | None) -> OperacaoShifter:
         if operacao is None:
             return OperacaoShifter.PASS
         if isinstance(operacao, OperacaoShifter):
             return operacao
+        if not isinstance(operacao, str):
+            raise TypeError("A operação do Shifter deve ser uma string ou OperacaoShifter.")
         chave = operacao.strip().upper()
         aliases = {
             "": OperacaoShifter.PASS,
@@ -73,7 +78,7 @@ class Shifter:
             bit_descartado = 0
         elif op == OperacaoShifter.SHL:
             if bits >= self.largura_bits:
-                bit_descartado = (entrada >> (self.largura_bits - 1)) & 1 if bits == self.largura_bits else 0
+                bit_descartado = entrada & 1 if bits == self.largura_bits else 0
                 saida = 0
             else:
                 bit_descartado = (entrada >> (self.largura_bits - bits)) & 1

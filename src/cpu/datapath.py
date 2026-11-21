@@ -1,8 +1,10 @@
+#mudei
 # falta: 1- função para ler do barramento B. 2- função para gravar do barramento c. 3- funções para ler e escrever memória com mar e mbr.
 from __future__ import annotations
 
 from cpu.ula import ULA, OperacaoULA, ResultadoULA
 from cpu.shifter import Shifter, OperacaoShifter, ResultadoShifter
+from memory.config import TAMANHO_RAM
 
 
 class DataPath:
@@ -15,7 +17,7 @@ class DataPath:
 
         self.pc = 0
         self.ac = 0
-        self.sp = 0
+        self.sp = TAMANHO_RAM
         self.ir = 0
         self.tir = 0
 
