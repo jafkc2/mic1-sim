@@ -13,10 +13,10 @@ class CPU:
             self.carregar_programa(programa)
 
     def executar_subciclo(self):
-        pass
+        raise NotImplementedError("Execucao de subciclo ainda nao disponivel.")
 
     def executar_ciclo(self):
-        pass
+        raise NotImplementedError("Execucao de ciclo ainda nao disponivel.")
 
     def carregar_programa(self, programa: str | None):
         if programa is None:

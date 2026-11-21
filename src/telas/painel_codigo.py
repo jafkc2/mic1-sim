@@ -27,6 +27,7 @@ class PainelCodigo(ctk.CTkFrame):
         try:
             self.cpu.carregar_programa(codigo)
             self.label_status.configure(text="Status: programa carregado")
+            self.master.painel_controle.label_status.configure(text="Status: pronto")
             self.master.atualizar()
         except Exception as erro:
             self.label_status.configure(text="Erro: {}".format(erro))

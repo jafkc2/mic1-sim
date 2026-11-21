@@ -33,6 +33,8 @@ class PainelControle(ctk.CTkFrame):
             self.cpu.executar_subciclo()
             self.label_status.configure(text="Status: subciclo executado")
             self.master.atualizar()
+        except NotImplementedError as erro:
+            self.label_status.configure(text="Status: {}".format(erro))
         except Exception as erro:
             self.label_status.configure(text="Erro: {}".format(erro))
 
@@ -41,6 +43,8 @@ class PainelControle(ctk.CTkFrame):
             self.cpu.executar_ciclo()
             self.label_status.configure(text="Status: ciclo executado")
             self.master.atualizar()
+        except NotImplementedError as erro:
+            self.label_status.configure(text="Status: {}".format(erro))
         except Exception as erro:
             self.label_status.configure(text="Erro: {}".format(erro))
 
@@ -59,6 +63,7 @@ class PainelControle(ctk.CTkFrame):
         try:
             self.cpu.reset()
             self.label_status.configure(text="Status: CPU reiniciada")
+            self.master.painel_codigo.label_status.configure(text="Status: aguardando")
             self.master.atualizar()
         except Exception as erro:
             self.label_status.configure(text="Erro: {}".format(erro))
