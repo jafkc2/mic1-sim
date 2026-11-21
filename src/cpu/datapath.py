@@ -139,3 +139,9 @@ class DataPath:
             "E": self.e,
             "F": self.f,
         }
+
+    def get_flags(self) -> dict[str, bool]:
+        return {
+            "N": self.flag_n,
+            "Z": self.flag_z,
+        }
