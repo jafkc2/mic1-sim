@@ -50,48 +50,48 @@ ErroAssembler = ErroMontagem
 
 
 def obter_linhas(codigo):
+    if not isinstance(codigo, str):
+        raise ErroMontagem("O codigo Assembly deve ser uma string.")
+
     linhas = []
     dentro_de_comentario = False
+    inicio_comentario = None
 
     for numero, linha in enumerate(codigo.splitlines(), 1):
-        texto = ""
+        texto = []
         indice = 0
 
         while indice < len(linha):
             if dentro_de_comentario:
-                fim = linha.find("*/", indice)
-                if fim == -1:
-                    indice = len(linha)
-                else:
+                if linha.startswith("*/", indice):
                     dentro_de_comentario = False
-                    indice = fim + 2
+                    inicio_comentario = None
+                    indice += 2
+                else:
+                    indice += 1
                 continue
 
-            inicio = linha.find("/*", indice)
-            trecho = linha[indice:] if inicio == -1 else linha[indice:inicio]
-
-            for marcador in ("//", "#", ";"):
-                posicao = trecho.find(marcador)
-                if posicao != -1:
-                    trecho = trecho[:posicao]
-
-            texto += trecho
-
-            if inicio == -1:
+            if linha.startswith("//", indice) or linha[indice] in ("#", ";"):
                 break
 
-            dentro_de_comentario = True
-            indice = inicio + 2
+            if linha.startswith("/*", indice):
+                texto.append(" ")
+                dentro_de_comentario = True
+                inicio_comentario = numero
+                indice += 2
+                continue
 
-        texto = texto.strip()
-        if texto:
-            linhas.append((numero, texto))
+            texto.append(linha[indice])
+            indice += 1
+
+        instrucao = "".join(texto).strip()
+        if instrucao:
+            linhas.append((numero, instrucao))
 
     if dentro_de_comentario:
-        raise ErroMontagem("Comentário não fechado.")
+        raise ErroMontagem("Comentario nao fechado.", numero_linha=inicio_comentario)
 
     return linhas
-
 
 def _erro(mensagem, numero_linha, linha):
     return ErroMontagem(mensagem, linha=linha, numero_linha=numero_linha)
