@@ -3,11 +3,10 @@ import montador
 from memory import ControladorMemoria
 
 class CPU:
-    def __init__(self, programa=None):
+    def __init__(self):
         # subclasses
         self.data_path = DataPath()
         self.memoria = ControladorMemoria()
-        self.carregar_programa(programa)
 
     # Execução de ciclos ainda n implementada, porque precisamos implementar todas as subclasses da cpu antes.
     def executar_subciclo(self):

@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from telas.tela_principal import TelaPrincipal
 
 
 class App(ctk.CTk):
@@ -6,12 +7,7 @@ class App(ctk.CTk):
         super().__init__()
         self.cpu = cpu
         self.title("MIC-1 Sim")
-        self.geometry("854x480")
-        self.resizable(False,  False)
-        self.mostrar_registradores()
-
-    def mostrar_registradores(self):
-        registradores = self.cpu.data_path.get_registradores()
-        for i, valor in registradores.items():
-            ctk.CTkLabel(self, text=f"Registrador {i}: {valor}").pack()
-            
+        self.geometry("1000x650")
+        self.resizable(True, True)
+        self.tela_principal = TelaPrincipal(self, cpu)
+        self.tela_principal.pack(fill="both", expand=True)
