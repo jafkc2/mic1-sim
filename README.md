@@ -43,3 +43,32 @@ será solicitado o seu nome de usuário do github e o seu token de acesso.
 ## Dependências do python
 
 * customtkinter
+
+## Docker
+
+#### Build a partir do codigo 
+
+```bash
+docker build -t mic1-sim .
+``` 
+
+#### Como carregar a partir de uma imagem docker
+
+```bash
+docker load -i mic1-sim.tar.gz
+``` 
+
+#### Como executar
+
+**No Linux**
+
+```bash
+xhost +local:docker
+docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix mic1-sim
+``` 
+
+**No Windows**
+
+```bash
+docker run -it --rm -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v /mnt/wslg:/mnt/wslg mic1-sim
+``` 
