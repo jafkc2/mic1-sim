@@ -32,8 +32,9 @@ class PainelControle(ctk.CTkFrame):
 
     def executar_subciclo(self):
         try:
-            self.cpu.executar_subciclo()
-            self.label_status.configure(text="Status: subciclo executado")
+            executou = self.cpu.executar_subciclo()
+            texto = "subciclo executado" if executou else "fim do programa"
+            self.label_status.configure(text="Status: " + texto)
             self.master.atualizar()
         except NotImplementedError as erro:
             self.label_status.configure(text="Status: {}".format(erro))
@@ -42,8 +43,9 @@ class PainelControle(ctk.CTkFrame):
 
     def executar_ciclo(self):
         try:
-            self.cpu.executar_ciclo()
-            self.label_status.configure(text="Status: ciclo executado")
+            executou = self.cpu.executar_ciclo()
+            texto = "ciclo executado" if executou else "fim do programa"
+            self.label_status.configure(text="Status: " + texto)
             self.master.atualizar()
         except NotImplementedError as erro:
             self.label_status.configure(text="Status: {}".format(erro))
@@ -53,8 +55,13 @@ class PainelControle(ctk.CTkFrame):
     def executar_programa(self):
         if hasattr(self.cpu, "executar_programa"):
             try:
-                self.cpu.executar_programa()
-                self.label_status.configure(text="Status: programa executado")
+                motivo = self.cpu.executar_programa()
+                texto = {
+                    "fim_programa": "programa concluido",
+                    "limite_instrucoes": "limite de instrucoes atingido",
+                    "limite_ciclos": "limite de ciclos atingido",
+                }[motivo]
+                self.label_status.configure(text="Status: " + texto)
                 self.master.atualizar()
             except Exception as erro:
                 self.label_status.configure(text="Erro: {}".format(erro))
