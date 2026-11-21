@@ -171,5 +171,32 @@ class DataPath:
     def get_barramentos(self) -> dict[str, int]:
         return {"A": self.barramento_a, "B": self.barramento_b, "C": self.barramento_c}
 
+    def get_registradores(self) -> dict[str, int]:
+        return {
+            "PC": self.pc,
+            "AC": self.ac,
+            "SP": self.sp,
+            "IR": self.ir,
+            "TIR": self.tir,
+            "0": self.c0,
+            "+1": self.cmais1,
+            "-1": self.cmenos1,
+            "AMASK": self.amask,
+            "SMASK": self.smask,
+            "MBR": self.mbr,
+            "MAR": self.mar,
+            "A": self.a,
+            "B": self.b,
+            "C": self.c,
+            "D": self.d,
+            "E": self.e,
+            "F": self.f,
+        }
+
+    def get_flags(self) -> dict[str, bool]:
+        return {
+            "N": self.flag_n,
+            "Z": self.flag_z,
+        }
     def get_latches(self) -> dict[str, int]:
         return {"A": self.latch_a, "B": self.latch_b}
