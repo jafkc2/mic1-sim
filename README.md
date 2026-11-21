@@ -14,11 +14,11 @@ Subclasses da classe CPU:
 - [x] Shifter
 - [ ] Unidade de controle
 - [x] Memória
-- [ ] Cache
+- [x] Cache
 
 -----------------------
 
-- [ ] Interface gráfica
+- [x] Interface gráfica
 
 
 ## Como baixar o repositório
