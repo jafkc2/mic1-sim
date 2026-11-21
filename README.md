@@ -64,7 +64,7 @@ docker load -i mic1-sim.tar.gz
 
 ```bash
 xhost +local:docker
-docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix mic1-sim
+sudo docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix mic1-sim
 ``` 
 
 **No Windows**
