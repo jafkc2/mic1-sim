@@ -204,6 +204,10 @@ class CPU:
         palavras = montador.montar(programa)
         tamanho = sum(bool(linha.rsplit(":", 1)[-1].strip())
                       for _, linha in montador.obter_linhas(programa))
+        if tamanho == 0:
+            raise montador.ErroMontagem(
+                "O programa Assembly deve conter pelo menos uma instrucao."
+            )
         self.memoria.carregar_programa(palavras)
         self.data_path.reset()
         self.unidade_controle.reset()
