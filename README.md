@@ -62,6 +62,14 @@ sudo docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix mi
 
 No Windows:
 
+O Docker precisa ser integrado ao WSL. Integre-o nas configurações do Docker Desktop.
+
+<img width="1124" height="629" alt="image" src="https://github.com/user-attachments/assets/ebc0ef0a-9e5b-4104-8071-2fcdfd2fa9a4" />
+
+
+Execute os comandos a seguir no prompt de comando ou no powershell:
+
 ```bash
+wsl
 docker run -it --rm -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v /mnt/wslg:/mnt/wslg mic1-sim
 ``` 
