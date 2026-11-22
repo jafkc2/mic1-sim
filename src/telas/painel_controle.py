@@ -71,8 +71,12 @@ class PainelControle(ctk.CTkFrame):
     def reset(self):
         try:
             self.cpu.reset()
-            self.label_status.configure(text="Status: CPU reiniciada")
-            self.master.painel_codigo.label_status.configure(text="Status: aguardando")
+            if self.cpu.programa_carregado:
+                self.label_status.configure(text="Status: programa reiniciado")
+                self.master.painel_codigo.label_status.configure(text="Status: programa carregado")
+            else:
+                self.label_status.configure(text="Status: CPU reiniciada")
+                self.master.painel_codigo.label_status.configure(text="Status: aguardando")
             self.master.atualizar()
         except Exception as erro:
             self.label_status.configure(text="Erro: {}".format(erro))
