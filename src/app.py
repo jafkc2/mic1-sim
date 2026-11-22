@@ -8,9 +8,10 @@ class App(ctk.CTk):
         ctk.set_appearance_mode("dark")
 
         super().__init__()
-        self.cpu : CPU = cpu
+        self.cpu: CPU = cpu
         self.title("MIC-1 Sim")
-        self.geometry("1000x650")
+        self.geometry("1280x830")
+        self.minsize(920, 640)
         self.resizable(True, True)
         self.tela_principal = TelaPrincipal(self, cpu)
         self.tela_principal.pack(fill="both", expand=True)

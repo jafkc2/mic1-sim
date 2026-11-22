@@ -26,6 +26,7 @@ class PainelCodigo(ctk.CTkFrame):
 
     def carregar_programa(self):
         codigo = self.texto_codigo.get("1.0", "end")
+        self.master.painel_controle.pausar_execucao(silencioso=True)
         try:
             self.cpu.carregar_programa(codigo)
         except Exception as erro:
@@ -43,8 +44,12 @@ class PainelCodigo(ctk.CTkFrame):
                 self.master.painel_controle.label_status.configure(
                     text="Status: nenhum programa carregado"
                 )
+            self.master.atualizar()
             return
 
+        self.master.painel_controle._inicio_ciclos = 0
+        self.master.painel_controle._inicio_instrucoes = 0
+        self.master.painel_controle._ja_iniciou = False
         self.label_status.configure(text="Status: programa carregado")
         self.master.painel_controle.label_status.configure(text="Status: pronto")
         self.master.atualizar()
