@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass, replace
 
-from .config import CICLOS_ACESSO_RAM, CICLOS_CONSULTA_CACHE
+from constantes import CICLOS_ACESSO_RAM, CICLOS_CONSULTA_CACHE
 from .cache import CacheMapeamentoDireto, DetalhesCache
 from .ram import MemoriaRAM
 
@@ -168,7 +168,7 @@ class ControladorMemoria:
             dado, d = cache.ler(endereco)
             return self._resultado(tipo_cache, operacao, dado, d,
                                    self._latencia(operacao, d.hit))
-        dado = self.ram._normalizar_palavra(valor)
+        dado = self.ram.normalizar_palavra(valor)
         d = cache.escrever(endereco, dado)
         invalidou = self.icache.invalidar_bloco(endereco)
         return self._resultado(tipo_cache, operacao, dado, d,
@@ -203,7 +203,7 @@ class ControladorMemoria:
         self._exigir_livre()
         self.ram._validar_endereco(endereco)
         if operacao == "escrita":
-            valor = self.ram._normalizar_palavra(valor)
+            valor = self.ram.normalizar_palavra(valor)
         hit = self._consultar_hit(tipo_cache, endereco)
         ciclos = self._latencia(operacao, hit)
         self._pendente = RequisicaoMemoria(tipo_cache, operacao, endereco, valor,
@@ -274,7 +274,7 @@ class ControladorMemoria:
     def carregar_programa(self, palavras: list[int], endereco_inicial: int = 0,
                          *, limpar_ram: bool = True) -> None:
         self.ram._validar_endereco(endereco_inicial)
-        valores = [self.ram._normalizar_palavra(v) for v in palavras]
+        valores = [self.ram.normalizar_palavra(v) for v in palavras]
         if endereco_inicial + len(valores) > self.ram.tamanho:
             raise ValueError("Programa ultrapassa os limites da RAM.")
         if limpar_ram:

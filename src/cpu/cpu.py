@@ -45,7 +45,7 @@ class CPU:
         if resultado is None:
             raise RuntimeError("Resultado de memoria esperado, mas indisponivel.")
         if resultado.operacao == "leitura":
-            self.data_path.receber_dado_memoria(resultado.valor)
+            self.data_path.set_dado_memoria(resultado.valor)
 
     def _concluir_microinstrucao(self):
         uc = self.unidade_controle
@@ -68,8 +68,8 @@ class CPU:
         self.memoria.processar_sinais(
             mi.rd,
             mi.wr,
-            dp.obter_endereco_memoria(),
-            dp.obter_dado_memoria(),
+            dp.get_endereco_memoria(),
+            dp.get_dado_memoria(),
             instrucao=uc.endereco_mir == 0,
         )
         self._sinal_memoria_aberto = bool(mi.rd or mi.wr) and not confirmacao
@@ -219,7 +219,6 @@ class CPU:
         self.tamanho_programa = tamanho
 
     def reset(self):
-
         self.memoria.reset()
         if self._programa_original is not None:
             self.memoria.carregar_programa(self._programa_original)

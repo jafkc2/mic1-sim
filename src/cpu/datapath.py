@@ -3,7 +3,7 @@ from __future__ import annotations
 from cpu.ula import ULA, OperacaoULA
 from cpu.shifter import Shifter, OperacaoShifter
 from cpu.microprogram import Microinstrucao
-from memory.config import TAMANHO_RAM, MASCARA_PALAVRA
+from constantes import TAMANHO_RAM, MASCARA_PALAVRA
 
 
 class DataPath:
@@ -41,23 +41,14 @@ class DataPath:
         self.latch_b = 0
         self.saida_amux = 0
         self.saida_ula = 0
-        self.ula.ultimo_resultado = None
-        self.shifter.ultimo_resultado = None
         self.microinstrucao_ativa: Microinstrucao | None = None
         self.etapa = 0
 
     @classmethod
-    def _resolver_registrador(cls, reg: int | str, *, especiais: bool = False) -> str:
-        if isinstance(reg, int) and not isinstance(reg, bool):
-            if not 0 <= reg < len(cls.NOMES_REGISTRADORES):
-                raise ValueError(f"Codigo de registrador invalido: {reg}.")
-            return cls.NOMES_REGISTRADORES[reg]
-        if not isinstance(reg, str):
-            raise TypeError("O registrador deve ser um nome ou codigo inteiro.")
-        nome = reg.strip().upper()
-        if nome not in cls.NOMES_REGISTRADORES and not (especiais and nome in ("MAR", "MBR")):
-            raise ValueError(f"Registrador invalido: {reg!r}.")
-        return nome
+    def _resolver_registrador(cls, reg: int) -> int:
+        if not 0 <= reg < len(cls.NOMES_REGISTRADORES):
+            raise ValueError(f"Codigo de registrador invalido: {reg}.")
+        return reg
 
     @staticmethod
     def _palavra(valor: int) -> int:
@@ -65,38 +56,37 @@ class DataPath:
             raise TypeError("O valor do registrador deve ser inteiro.")
         return valor & MASCARA_PALAVRA
 
-    def ler_registrador(self, reg: int | str) -> int:
-        nome = self._resolver_registrador(reg, especiais=True)
+    def ler_registrador(self, reg: int) -> int:
+        reg = self._resolver_registrador(reg)
+        nome = self.NOMES_REGISTRADORES[reg]
         return getattr(self, self.ATRIBUTOS[nome])
 
-    def ler_barramento_a(self, reg: int | str = "A", usar_mbr: bool = False) -> int:
-        if isinstance(reg, bool):
-            usar_mbr = reg
-            reg = "A"
+    def ler_barramento_a(self, reg: int = 10, usar_mbr: bool = False) -> int:
         if usar_mbr:
             return self.mbr
-        nome = self._resolver_registrador(reg)
-        self.barramento_a = self.ler_registrador(nome)
+        reg = self._resolver_registrador(reg)
+        self.barramento_a = self.ler_registrador(reg)
         return self.barramento_a
 
-    def ler_barramento_b(self, reg: int | str) -> int:
-        nome = self._resolver_registrador(reg)
-        self.barramento_b = self.ler_registrador(nome)
+    def ler_barramento_b(self, reg: int) -> int:
+        reg = self._resolver_registrador(reg)
+        self.barramento_b = self.ler_registrador(reg)
         return self.barramento_b
 
-    def escrever_barramento_c(self, valor: int, destinos: str | int | list[str | int]) -> None:
+    def escrever_barramento_c(self, valor: int,
+                              destinos: int | list[int]) -> None:
         valor = self._palavra(valor)
-        if isinstance(destinos, (str, int)):
+        if type(destinos) is int:
             destinos = [destinos]
-        nomes = [self._resolver_registrador(reg, especiais=True) for reg in destinos]
+        if not isinstance(destinos, list):
+            raise TypeError("O destino deve ser um codigo inteiro ou uma lista de codigos.")
+        registradores = [self._resolver_registrador(reg) for reg in destinos]
         self.barramento_c = valor
-        for nome in nomes:
+        for reg in registradores:
+            nome = self.NOMES_REGISTRADORES[reg]
             if nome in self.CONSTANTES:
                 continue
-            if nome == "MAR":
-                self.mar = valor & (TAMANHO_RAM - 1)
-            else:
-                setattr(self, self.ATRIBUTOS[nome], valor)
+            setattr(self, self.ATRIBUTOS[nome], valor)
 
     def selecionar_amux(self, sinal: int) -> int:
         if sinal not in (0, 1):
@@ -109,21 +99,22 @@ class DataPath:
         valor_a: int,
         valor_b: int,
         op_ula: OperacaoULA | str,
-        op_shifter: OperacaoShifter | str = "PASS",
+        op_shifter: OperacaoShifter = OperacaoShifter.PASS,
     ) -> int:
-        res_ula = self.ula.executar(valor_a, valor_b, op_ula)
-        res_shifter = self.shifter.executar(res_ula.saida, op_shifter)
-        self.saida_ula = res_ula.saida
-        self.flag_z = res_ula.z
-        self.flag_n = res_ula.n
-        self.barramento_c = res_shifter.saida
+        saida, flag_n, flag_z = self.ula.executar(
+            valor_a, valor_b, op_ula
+        )
+        saida = self.shifter.executar(saida, op_shifter)
+        self.saida_ula = saida
+        self.flag_z = flag_z
+        self.flag_n = flag_n
+        self.barramento_c = saida
         return self.barramento_c
 
     def carregar_latches(self, microinstrucao: Microinstrucao) -> None:
         if self.etapa != 0:
             raise RuntimeError("O Datapath ainda possui uma microinstrucao em andamento.")
-        if not isinstance(microinstrucao, Microinstrucao):
-            raise TypeError("Esperada uma Microinstrucao.")
+
         self.latch_a = self.ler_barramento_a(microinstrucao.a)
         self.latch_b = self.ler_barramento_b(microinstrucao.b)
         self.microinstrucao_ativa = microinstrucao
@@ -152,18 +143,24 @@ class DataPath:
         self.microinstrucao_ativa = None
         self.etapa = 0
 
-    def obter_endereco_memoria(self) -> int:
+    def get_endereco_memoria(self) -> int:
         return self.mar & (TAMANHO_RAM - 1)
 
-    def obter_dado_memoria(self) -> int:
+    def get_dado_memoria(self) -> int:
         return self.mbr & MASCARA_PALAVRA
-
-    def receber_dado_memoria(self, valor: int) -> None:
-        self.mbr = self._palavra(valor)
 
     def get_registradores(self) -> dict[str, int]:
         nomes = (*self.NOMES_REGISTRADORES[:10], "MBR", "MAR", *self.NOMES_REGISTRADORES[10:])
-        return {nome: self.ler_registrador(nome) for nome in nomes}
+        codigo = (*range(10), -1, -1, *range(10, 16))
+        resultado = {}
+        for nome, reg in zip(nomes, codigo):
+            if nome == "MBR":
+                resultado[nome] = self.mbr
+            elif nome == "MAR":
+                resultado[nome] = self.mar
+            else:
+                resultado[nome] = self.ler_registrador(reg)
+        return resultado
 
     def get_flags(self) -> dict[str, bool]:
         return {"N": self.flag_n, "Z": self.flag_z}
@@ -173,3 +170,6 @@ class DataPath:
 
     def get_latches(self) -> dict[str, int]:
         return {"A": self.latch_a, "B": self.latch_b}
+
+    def set_dado_memoria(self, valor: int) -> None:
+        self.mbr = self._palavra(valor)

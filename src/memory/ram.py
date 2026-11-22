@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Iterable
 
-from .config import MASCARA_PALAVRA, TAMANHO_RAM
+from constantes import MASCARA_PALAVRA, TAMANHO_RAM
 
 
 class MemoriaRAM:
@@ -16,8 +16,7 @@ class MemoriaRAM:
         if type(endereco) is not int or not (0 <= endereco < self.tamanho):
             raise ValueError(f"Endereco invalido: {endereco!r}. Intervalo: 0..{self.tamanho - 1}.")
 
-    @staticmethod
-    def _normalizar_palavra(valor: int) -> int:
+    def normalizar_palavra(self, valor: int) -> int:
         if type(valor) is not int:
             raise TypeError("O conteudo de uma palavra deve ser inteiro.")
         return valor & MASCARA_PALAVRA
@@ -28,11 +27,11 @@ class MemoriaRAM:
 
     def escrever(self, endereco: int, valor: int) -> None:
         self._validar_endereco(endereco)
-        self._palavras[endereco] = self._normalizar_palavra(valor)
+        self._palavras[endereco] = self.normalizar_palavra(valor)
 
     def carregar(self, palavras: Iterable[int], endereco_inicial: int = 0) -> None:
         self._validar_endereco(endereco_inicial)
-        valores = [self._normalizar_palavra(v) for v in palavras]
+        valores = [self.normalizar_palavra(v) for v in palavras]
         if endereco_inicial + len(valores) > self.tamanho:
             raise ValueError("Programa ultrapassa os limites da RAM.")
         self._palavras[endereco_inicial:endereco_inicial + len(valores)] = valores

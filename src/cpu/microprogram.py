@@ -191,7 +191,7 @@ MICROPROGRAMA = (
     _m(a=A, b=UM, alu=0, destino=A, cond=GOTO, addr=75),
 )
 
-TAMANHO_ROM = 256
+from constantes import TAMANHO_ROM
 ROM = tuple(mi.codificar() for mi in MICROPROGRAMA) + (None,) * (
     TAMANHO_ROM - len(MICROPROGRAMA)
 )

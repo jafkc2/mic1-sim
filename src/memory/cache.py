@@ -1,10 +1,8 @@
-# mapeamento direto
-
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from .config import LINHAS_CACHE, PALAVRAS_POR_BLOCO
+from constantes import LINHAS_CACHE, PALAVRAS_POR_BLOCO
 from .ram import MemoriaRAM
 
 
@@ -86,8 +84,6 @@ class CacheMapeamentoDireto:
         return {"tag": tag, "indice": indice, "deslocamento": deslocamento,
                 "inicio_bloco": inicio_bloco}
 
-
-    #VER SE ALGUM ELEMENTO ESTA NA CACHE
     def _localizar(self, endereco: int) -> tuple[LinhaCache, DetalhesCache]:
         indice, tag, deslocamento, inicio_bloco = self._partes(endereco)
         linha = self.linhas[indice]
@@ -121,7 +117,7 @@ class CacheMapeamentoDireto:
     def escrever(self, endereco: int, valor: int) -> DetalhesCache:
         if self.somente_leitura:
             raise PermissionError(f"Nao e permitido escrever na cache {self.nome}.")
-        valor = self.ram._normalizar_palavra(valor)
+        valor = self.ram.normalizar_palavra(valor)
         linha, detalhes = self._localizar(endereco)
         self.estatisticas.escritas += 1
         linha.dados[detalhes.deslocamento] = valor

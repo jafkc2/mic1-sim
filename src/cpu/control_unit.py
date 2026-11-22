@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from cpu.microprogram import Condicao, Microinstrucao, ROM, TAMANHO_ROM
+from cpu.microprogram import Condicao, Microinstrucao, ROM
 
 
 class UnidadeControle:
-    def __init__(self, rom: tuple[int | None, ...] = ROM) -> None:
-        self.rom = tuple(rom)
-        if len(self.rom) != TAMANHO_ROM:
-            raise ValueError("A memoria de controle deve ter 256 posicoes.")
-        for palavra in self.rom:
-            if palavra is not None:
-                Microinstrucao.decodificar(palavra)
+    def __init__(self) -> None:
+        self.rom = tuple(ROM)
+        self._mir_rom = [
+            Microinstrucao.decodificar(palavra)
+            if palavra is not None else None
+            for palavra in self.rom
+        ]
         self.reset()
 
     def reset(self) -> None:
@@ -20,21 +20,20 @@ class UnidadeControle:
         self.em_execucao = False
 
     def buscar_microinstrucao(self) -> Microinstrucao:
-        if self.em_execucao:
-            raise RuntimeError("A microinstrucao atual ainda nao foi concluida.")
-        if type(self.mpc) is not int or not 0 <= self.mpc < TAMANHO_ROM:
-            raise ValueError(f"Endereco de controle invalido: {self.mpc!r}.")
-        palavra = self.rom[self.mpc]
-        if palavra is None:
-            raise RuntimeError(f"Endereco de controle nao programado: {self.mpc}.")
-        self.mir = Microinstrucao.decodificar(palavra)
-        self.endereco_mir = self.mpc
-        self.em_execucao = True
-        return self.mir
+        if 0 <= self.mpc < len(self._mir_rom):
+            mir = self._mir_rom[self.mpc]
+            if mir is not None:
+                self.mir = mir
+                self.endereco_mir = self.mpc
+                self.em_execucao = True
+                return mir
+        raise RuntimeError(
+            f"Endereco de controle invalido ou nao programado: {self.mpc}"
+        )
 
     def calcular_proximo_endereco(self, flag_n: bool, flag_z: bool) -> int:
-        if not self.em_execucao or self.mir is None or self.endereco_mir is None:
-            raise RuntimeError("Nenhuma microinstrucao em execucao.")
+        if self.mir is None or self.endereco_mir is None:
+            return 0
         cond = self.mir.cond
         desviar = (
             cond == Condicao.SEMPRE
