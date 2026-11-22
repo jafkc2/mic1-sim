@@ -2,7 +2,6 @@ from cpu.datapath import DataPath
 from cpu.control_unit import UnidadeControle
 import montador
 from memory import ControladorMemoria
-from memory.config import TAMANHO_RAM
 
 
 class CPU:
@@ -10,6 +9,8 @@ class CPU:
         self.data_path = DataPath()
         self.memoria = ControladorMemoria()
         self.unidade_controle = UnidadeControle()
+        self._programa_original = None
+        self._tamanho_programa_original = 0
         self._reiniciar_execucao()
 
         if programa is not None:
@@ -36,7 +37,7 @@ class CPU:
             and not self.em_espera
             and not self.unidade_controle.em_execucao
             and self.unidade_controle.mpc == 0
-            and (self.data_path.pc & (TAMANHO_RAM - 1)) >= self.tamanho_programa
+            and self.data_path.pc >= self.tamanho_programa
         )
 
     def _entregar_resultado_memoria(self):
@@ -205,6 +206,8 @@ class CPU:
         tamanho = sum(bool(linha.rsplit(":", 1)[-1].strip())
                       for _, linha in montador.obter_linhas(programa))
         self.memoria.carregar_programa(palavras)
+        self._programa_original = tuple(palavras)
+        self._tamanho_programa_original = tamanho
         self.data_path.reset()
         self.unidade_controle.reset()
         self._reiniciar_execucao()
@@ -212,7 +215,13 @@ class CPU:
         self.tamanho_programa = tamanho
 
     def reset(self):
+
         self.memoria.reset()
+        if self._programa_original is not None:
+            self.memoria.carregar_programa(self._programa_original)
         self.data_path.reset()
         self.unidade_controle.reset()
         self._reiniciar_execucao()
+        if self._programa_original is not None:
+            self.programa_carregado = True
+            self.tamanho_programa = self._tamanho_programa_original
