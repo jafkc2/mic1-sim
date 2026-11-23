@@ -4,8 +4,10 @@ from cpu.microprogram import Condicao, Microinstrucao, ROM
 
 
 class UnidadeControle:
-    def __init__(self) -> None:
-        self.rom = tuple(ROM)
+    def __init__(self, rom=ROM) -> None:
+        self.rom = tuple(rom)
+        if len(self.rom) != 256:
+            raise ValueError("A ROM deve ter 256 posicoes.")
         self._mir_rom = [
             Microinstrucao.decodificar(palavra)
             if palavra is not None else None
@@ -20,7 +22,9 @@ class UnidadeControle:
         self.em_execucao = False
 
     def buscar_microinstrucao(self) -> Microinstrucao:
-        if 0 <= self.mpc < len(self._mir_rom):
+        if self.em_execucao:
+            raise RuntimeError("A microinstrucao atual ainda nao foi concluida.")
+        if type(self.mpc) is int and 0 <= self.mpc < len(self._mir_rom):
             mir = self._mir_rom[self.mpc]
             if mir is not None:
                 self.mir = mir
@@ -32,8 +36,8 @@ class UnidadeControle:
         )
 
     def calcular_proximo_endereco(self, flag_n: bool, flag_z: bool) -> int:
-        if self.mir is None or self.endereco_mir is None:
-            return 0
+        if not self.em_execucao or self.mir is None or self.endereco_mir is None:
+            raise RuntimeError("Nenhuma microinstrucao em execucao.")
         cond = self.mir.cond
         desviar = (
             cond == Condicao.SEMPRE

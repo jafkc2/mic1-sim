@@ -21,6 +21,8 @@ class MemoriaRAM:
             raise TypeError("O conteudo de uma palavra deve ser inteiro.")
         return valor & MASCARA_PALAVRA
 
+    _normalizar_palavra = normalizar_palavra
+
     def ler(self, endereco: int) -> int:
         self._validar_endereco(endereco)
         return self._palavras[endereco]
