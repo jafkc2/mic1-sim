@@ -5,7 +5,7 @@ import customtkinter as ctk
 from cpu.cpu import CPU
 from cpu.datapath import DataPath
 from cpu.microprogram import Condicao, Microinstrucao
-from .cores import Paleta
+from ..cores import Paleta
 
 
 class PainelMicroprograma(Paleta, ctk.CTkFrame):

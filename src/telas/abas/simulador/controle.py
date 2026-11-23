@@ -1,7 +1,7 @@
 import customtkinter as ctk
 
 from cpu.cpu import CPU
-from .cores import Paleta
+from ...cores import Paleta
 
 
 class PainelControle(Paleta, ctk.CTkFrame):

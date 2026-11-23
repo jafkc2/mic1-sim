@@ -3,7 +3,7 @@ from __future__ import annotations
 import customtkinter as ctk
 
 from cpu.cpu import CPU
-from .cores import Paleta
+from ..cores import Paleta
 
 
 class PainelCache(Paleta, ctk.CTkFrame):
