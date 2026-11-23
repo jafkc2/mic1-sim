@@ -5,6 +5,7 @@ import tkinter as tk
 import customtkinter as ctk
 
 from cpu.cpu import CPU
+from constantes import LINHAS_CACHE, PALAVRAS_POR_BLOCO
 from ..cores import Paleta
 
 
@@ -222,9 +223,9 @@ class PainelDatapath(Paleta, ctk.CTkFrame):
             linha([(547, 482), (621, 482)], etapa in (4, 5) and escrita, self.CORES[4])
         linha([(547, 579), (578, 579), (578, 496), (621, 496)],
               etapa in (4, 5) and (leitura or escrita), self.CORES[4])
-        caixa(835, 428, 951, 490, "I-CACHE", "4 × 4 palavras",
+        caixa(835, 428, 951, 490, "I-CACHE", f"{LINHAS_CACHE} × {PALAVRAS_POR_BLOCO} palavras",
               etapa in (4, 5) and leitura_instrucao, self.CORES[5 if etapa == 5 else 4])
-        caixa(968, 428, 1090, 490, "D-CACHE", "4 × 4 palavras",
+        caixa(968, 428, 1090, 490, "D-CACHE", f"{LINHAS_CACHE} × {PALAVRAS_POR_BLOCO} palavras",
               etapa in (4, 5) and acesso_dados, self.CORES[5 if etapa == 5 else 4])
         caixa(849, 542, 1081, 602, "RAM", "4096 palavras de 16 bits",
               etapa == 5, self.CORES[5])
