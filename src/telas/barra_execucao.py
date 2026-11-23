@@ -41,12 +41,17 @@ class BarraExecucao(Paleta, ctk.CTkFrame):
             text_color="#b2c3d8",
             font=ctk.CTkFont(size=12),
         )
-        self.label_status.grid(
-            row=0,
-            column=6,
-            sticky="ew",
-            padx=10,
-        )
+        self.label_status.grid(row=0, column=6, sticky="ew", padx=10)
+        faixa = ctk.CTkFrame(self, fg_color="transparent")
+        faixa.grid(row=1, column=0, columnspan=7, sticky="ew", padx=9, pady=(0, 5))
+        faixa.grid_columnconfigure(0, weight=1)
+        painel = self.tela.painel_controle
+        self.controle_velocidade = ctk.CTkSlider(
+            faixa, from_=1, to=60, number_of_steps=59,
+            variable=painel.velocidade, command=painel.definir_velocidade)
+        self.controle_velocidade.grid(row=0, column=0, sticky="ew", padx=(4, 12))
+        self.label_velocidade = ctk.CTkLabel(faixa, text="", width=205)
+        self.label_velocidade.grid(row=0, column=1)
         self.atualizar_estado()
 
     def atualizar_estado(self):
@@ -65,9 +70,9 @@ class BarraExecucao(Paleta, ctk.CTkFrame):
             and disponivel
         ) else "Iniciar"
         self._botoes["iniciar"].configure(text=iniciar)
-        self.label_status.configure(
-            text=painel.label_status.cget("text")
-        )
+        self.label_status.configure(text=painel.label_status.cget("text"))
+        self.label_velocidade.configure(
+            text=f"Velocidade: {painel.velocidade.get()} subciclos/s")
 
     def _executar(self, acao):
         painel = self.tela.painel_controle

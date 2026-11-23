@@ -1,0 +1,3 @@
+from constantes import (BITS_PALAVRA, MASCARA_PALAVRA, TAMANHO_RAM,
+                       TAMANHO_ROM, LINHAS_CACHE, PALAVRAS_POR_BLOCO,
+                       CICLOS_CONSULTA_CACHE, CICLOS_ACESSO_RAM)
