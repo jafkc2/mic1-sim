@@ -3,18 +3,10 @@ from __future__ import annotations
 import customtkinter as ctk
 
 from cpu.cpu import CPU
+from .cores import Paleta
 
 
-class PainelMemoria(ctk.CTkFrame):
-    FUNDO = "#091321"
-    PAINEL = "#122237"
-    BORDA = "#344a64"
-    TEXTO = "#f0f6fc"
-    SECUNDARIO = "#9db0c7"
-    AZUL = "#38bdf8"
-    VERDE = "#34d399"
-    AMARELO = "#fbbf24"
-    VERMELHO = "#fb7185"
+class PainelMemoria(Paleta, ctk.CTkFrame):
 
     def __init__(self, master, cpu: CPU | None = None, compacto: bool = False):
         super().__init__(master, fg_color=self.FUNDO if not compacto else "transparent")
@@ -58,7 +50,7 @@ class PainelMemoria(ctk.CTkFrame):
             row=1 if compacto else 2, column=0, sticky="nsew",
             padx=8 if compacto else 14, pady=(3, 8) if compacto else (5, 9),
         )
-        self.texto_memoria.tag_config("mar", background="#255c85", foreground="#ffffff")
+        self.texto_memoria.tag_config("mar", background=self.BOTAO_AZUL, foreground="#ffffff")
         self.texto_memoria.tag_config("escrito", background="#735524", foreground="#ffffff")
         self.texto_memoria.tag_config("selecionado", background="#233f52", foreground="#ffffff")
         self.texto_memoria.configure(state="disabled")

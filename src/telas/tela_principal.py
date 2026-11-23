@@ -1,6 +1,7 @@
 import customtkinter as ctk
 
 from cpu.cpu import CPU
+from .cores import Paleta
 from .painel_codigo import PainelCodigo
 from .painel_controle import PainelControle
 from .painel_cache import PainelCache
@@ -45,9 +46,9 @@ class TelaSimulador(ctk.CTkFrame):
         self._atualizar_graficos()
 
 
-class BarraExecucao(ctk.CTkFrame):
+class BarraExecucao(Paleta, ctk.CTkFrame):
     def __init__(self, master, tela):
-        super().__init__(master, fg_color="#122237", corner_radius=7)
+        super().__init__(master, fg_color=self.PAINEL, corner_radius=7)
         self.tela = tela
         self.grid_columnconfigure(5, weight=1)
         self._botoes = {}
@@ -62,8 +63,8 @@ class BarraExecucao(ctk.CTkFrame):
         for coluna, (rotulo, acao) in enumerate(acoes):
             botao = ctk.CTkButton(
                 self, text=rotulo, width=88, height=30,
-                fg_color="#255c85" if acao not in ("reset", "pausar") else "#48576b",
-                hover_color="#3075a6" if acao not in ("reset", "pausar") else "#65768b",
+                fg_color=self.BOTAO_AZUL if acao not in ("reset", "pausar") else self.BOTAO_NEUTRO,
+                hover_color=self.BOTAO_AZUL_HOVER if acao not in ("reset", "pausar") else self.BOTAO_NEUTRO_HOVER,
                 command=lambda a=acao: self._executar(a),
             )
             botao.grid(row=0, column=coluna, padx=(8 if coluna == 0 else 2, 2), pady=(7, 3))

@@ -3,19 +3,10 @@ from __future__ import annotations
 import customtkinter as ctk
 
 from cpu.cpu import CPU
+from .cores import Paleta
 
 
-class PainelCache(ctk.CTkFrame):
-    FUNDO = "#091321"
-    PAINEL = "#122237"
-    INTERNO = "#182a41"
-    BORDA = "#344a64"
-    TEXTO = "#f0f6fc"
-    SECUNDARIO = "#9db0c7"
-    AZUL = "#38bdf8"
-    VERDE = "#34d399"
-    AMARELO = "#fbbf24"
-    VERMELHO = "#fb7185"
+class PainelCache(Paleta, ctk.CTkFrame):
 
     def __init__(self, master, cpu: CPU):
         super().__init__(master, fg_color=self.FUNDO)
@@ -98,7 +89,7 @@ class PainelCache(ctk.CTkFrame):
         resumo.grid(row=1, column=0, sticky="w", pady=(2, 0))
         self._resumos[tipo] = resumo
 
-        cab = ctk.CTkFrame(quadro, fg_color="#24374d", corner_radius=3)
+        cab = ctk.CTkFrame(quadro, fg_color=self.CABECALHO, corner_radius=3)
         cab.grid(row=1, column=0, padx=12, pady=(4, 3), sticky="ew")
         cab.grid_columnconfigure(4, weight=1)
         for col, texto in enumerate(("LINHA", "V", "TAG", "BLOCO RAM", "PALAVRAS (16 BITS)")):
@@ -112,7 +103,7 @@ class PainelCache(ctk.CTkFrame):
         self._linhas_cache[tipo] = []
         cache = self.cpu.memoria.icache if tipo == "I" else self.cpu.memoria.dcache
         for indice in range(cache.quantidade_linhas):
-            linha = ctk.CTkFrame(linhas, fg_color=self.INTERNO, corner_radius=5,
+            linha = ctk.CTkFrame(linhas, fg_color=self.PAINEL_INTERNO, corner_radius=5,
                                  border_width=1, border_color=self.BORDA)
             linha.grid(row=indice, column=0, sticky="ew", pady=2)
             linha.grid_columnconfigure(4, weight=1)
@@ -141,7 +132,7 @@ class PainelCache(ctk.CTkFrame):
                                          self.SECUNDARIO, 12, anchor="w", justify="left")
         self.label_operacao.grid(row=1, column=0, sticky="ew", padx=13, pady=(2, 3))
         self.progresso = ctk.CTkProgressBar(
-            quadro, height=9, fg_color="#24374d", progress_color=self.AZUL,
+            quadro, height=9, fg_color=self.CABECALHO, progress_color=self.AZUL,
         )
         self.progresso.grid(row=2, column=0, padx=13, pady=(4, 10), sticky="ew")
         self.progresso.set(0)
@@ -164,13 +155,13 @@ class PainelCache(ctk.CTkFrame):
         self.entrada_endereco.bind("<Return>", lambda _e: self.inspecionar_endereco())
         self.seletor_cache = ctk.CTkOptionMenu(
             quadro, values=["I-Cache", "D-Cache"], variable=self._inspecao_cache,
-            width=113, fg_color="#255c85", button_color="#3075a6",
-            button_hover_color="#3b88b7",
+            width=113, fg_color=self.BOTAO_AZUL, button_color=self.BOTAO_AZUL_HOVER,
+            button_hover_color=self.BOTAO_AZUL_ALTERNATIVO_HOVER,
         )
         self.seletor_cache.grid(row=1, column=2, padx=4, pady=7)
         ctk.CTkButton(
             quadro, text="Inspecionar", command=self.inspecionar_endereco,
-            width=105, fg_color="#255c85", hover_color="#3075a6",
+            width=105, fg_color=self.BOTAO_AZUL, hover_color=self.BOTAO_AZUL_HOVER,
         ).grid(row=1, column=3, padx=4, pady=7)
         self.label_inspecao = self._texto(
             quadro, "Informe um endereço em decimal ou hexadecimal (0x...).",
@@ -237,7 +228,7 @@ class PainelCache(ctk.CTkFrame):
                 em_andamento = destaque and pendente is not None
                 cor = self.AMARELO if em_andamento else (self.VERDE if destaque and ativo.hit else self.VERMELHO if destaque else self.BORDA)
                 quadro.configure(border_color=cor,
-                                 fg_color="#22364a" if destaque else self.INTERNO)
+                                 fg_color=self.DESTAQUE_CACHE if destaque else self.PAINEL_INTERNO)
                 valido = dados["valido"]
                 labels[0].configure(text=f"{indice:02d}")
                 labels[1].configure(text="1" if valido else "0",

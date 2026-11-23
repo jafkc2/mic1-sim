@@ -5,18 +5,13 @@ import tkinter as tk
 import customtkinter as ctk
 
 from cpu.cpu import CPU
+from .cores import Paleta
 
 
-class PainelDatapath(ctk.CTkFrame):
+class PainelDatapath(Paleta, ctk.CTkFrame):
     LARGURA = 1120
     ALTURA = 710
-    FUNDO = "#091321"
-    PAINEL = "#122237"
-    PAINEL_INTERNO = "#182a41"
-    BORDA = "#344a64"
-    TEXTO = "#f0f6fc"
-    SECUNDARIO = "#9db0c7"
-    CORES = {0: "#6b819a", 1: "#38bdf8", 2: "#a78bfa", 3: "#f59e0b", 4: "#34d399", 5: "#fb7185"}
+    CORES = Paleta.ETAPAS
 
     def __init__(self, master, cpu: CPU):
         super().__init__(master, fg_color=self.FUNDO)

@@ -5,16 +5,10 @@ import customtkinter as ctk
 from cpu.cpu import CPU
 from cpu.datapath import DataPath
 from cpu.microprogram import Condicao, Microinstrucao
+from .cores import Paleta
 
 
-class PainelMicroprograma(ctk.CTkFrame):
-    FUNDO = "#091321"
-    CARTAO = "#122237"
-    TEXTO = "#f0f6fc"
-    SECUNDARIO = "#9db0c7"
-    DESTAQUE = "#38bdf8"
-    PROXIMA = "#34d399"
-    MIR = "#f59e0b"
+class PainelMicroprograma(Paleta, ctk.CTkFrame):
 
     def __init__(self, master, cpu: CPU):
         super().__init__(master, fg_color=self.FUNDO)
@@ -49,7 +43,7 @@ class PainelMicroprograma(ctk.CTkFrame):
             text_color=self.SECUNDARIO,
         ).grid(row=0, column=1, padx=8, sticky="e")
 
-        status = ctk.CTkFrame(self, fg_color=self.CARTAO, corner_radius=7)
+        status = ctk.CTkFrame(self, fg_color=self.PAINEL, corner_radius=7)
         status.grid(row=1, column=0, columnspan=2, sticky="ew", padx=14, pady=8)
         for coluna in range(4):
             status.grid_columnconfigure(coluna, weight=1)
@@ -67,7 +61,7 @@ class PainelMicroprograma(ctk.CTkFrame):
             valor.pack(anchor="w")
             self._valores_status[nome] = valor
 
-        esquerda = ctk.CTkFrame(self, fg_color=self.CARTAO, corner_radius=8)
+        esquerda = ctk.CTkFrame(self, fg_color=self.PAINEL, corner_radius=8)
         esquerda.grid(row=2, column=0, sticky="nsew", padx=(14, 7), pady=(3, 12))
         esquerda.grid_columnconfigure(0, weight=1)
         esquerda.grid_rowconfigure(2, weight=1)
@@ -94,7 +88,7 @@ class PainelMicroprograma(ctk.CTkFrame):
             botao.grid(row=i, column=0, sticky="ew", pady=2)
             self._botoes[endereco] = botao
 
-        direita = ctk.CTkFrame(self, fg_color=self.CARTAO, corner_radius=8)
+        direita = ctk.CTkFrame(self, fg_color=self.PAINEL, corner_radius=8)
         direita.grid(row=2, column=1, sticky="nsew", padx=(7, 14), pady=(3, 12))
         direita.grid_columnconfigure(0, weight=1)
         direita.grid_rowconfigure(3, weight=1)
@@ -112,7 +106,7 @@ class PainelMicroprograma(ctk.CTkFrame):
         ).grid(row=0, column=1, padx=(8, 0))
 
         self.rotulo_binario = ctk.CTkLabel(
-            direita, text="", text_color=self.DESTAQUE,
+            direita, text="", text_color=self.AZUL,
             font=ctk.CTkFont(family="Consolas", size=13), anchor="w",
         )
         self.rotulo_binario.grid(row=1, column=0, sticky="ew", padx=14, pady=5)
@@ -205,9 +199,9 @@ class PainelMicroprograma(ctk.CTkFrame):
                 descricao = str(valor)
             else:
                 descricao = str(valor)
-            rotulo.configure(text=descricao, text_color=self.MIR if nome in ("RD", "WR", "MAR", "MBR", "ENC") and valor else self.TEXTO)
+            rotulo.configure(text=descricao, text_color=self.LARANJA if nome in ("RD", "WR", "MAR", "MBR", "ENC") and valor else self.TEXTO)
             item.configure(border_width=1 if nome in ("RD", "WR", "MAR", "MBR", "ENC") and valor else 0,
-                           border_color=self.MIR)
+                           border_color=self.LARANJA)
 
     def selecionar(self, endereco: int):
         self._selecao_manual = True
@@ -227,7 +221,7 @@ class PainelMicroprograma(ctk.CTkFrame):
             proximo = uc.mpc == endereco
             estilo = (
                 "#25405b" if selecionado else "#192a40",
-                self.MIR if em_mir else (self.PROXIMA if proximo else "#273b55"),
+                self.LARANJA if em_mir else (self.VERDE if proximo else "#273b55"),
                 self.TEXTO if (selecionado or em_mir or proximo) else self.SECUNDARIO,
                 2 if (em_mir or proximo or selecionado) else 1,
             )

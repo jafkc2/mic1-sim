@@ -1,9 +1,10 @@
 import customtkinter as ctk
 
 from cpu.cpu import CPU
+from .cores import Paleta
 
 
-class PainelControle(ctk.CTkFrame):
+class PainelControle(Paleta, ctk.CTkFrame):
     MAX_INSTRUCOES = 1000
     MAX_CICLOS = 100000
 
@@ -40,12 +41,12 @@ class PainelControle(ctk.CTkFrame):
         self.botao_programa.grid(row=2, column=1, padx=(4, 10), pady=3, sticky="ew")
         self.botao_pausar = ctk.CTkButton(
             self, text="Pausar", command=self.pausar_execucao,
-            fg_color="#48576b", hover_color="#65768b",
+            fg_color=self.BOTAO_NEUTRO, hover_color=self.BOTAO_NEUTRO_HOVER,
         )
         self.botao_pausar.grid(row=3, column=0, padx=(10, 4), pady=3, sticky="ew")
         self.botao_reset = ctk.CTkButton(
             self, text="Reset", command=self.reset,
-            fg_color="#48576b", hover_color="#65768b",
+            fg_color=self.BOTAO_NEUTRO, hover_color=self.BOTAO_NEUTRO_HOVER,
         )
         self.botao_reset.grid(row=3, column=1, padx=(4, 10), pady=3, sticky="ew")
         self.label_velocidade = ctk.CTkLabel(self, text="Velocidade: 12 subciclos/s")
