@@ -26,8 +26,11 @@ class PainelCache(Paleta, ctk.CTkFrame):
             cabecalho, text="Memória Cache", text_color=self.TEXTO,
             font=ctk.CTkFont(size=21, weight="bold"),
         ).grid(row=0, column=0, sticky="w")
+        cache = cpu.memoria.icache
         ctk.CTkLabel(
-            cabecalho, text="I-Cache e D-Cache  ·  mapeamento direto  ·  write-through / write-allocate",
+            cabecalho,
+            text=(f"I-Cache e D-Cache  ·  {cache.quantidade_linhas} linhas × "
+                  f"{cache.palavras_por_bloco} palavras  ·  mapeamento direto  ·  write-through / write-allocate"),
             text_color=self.SECUNDARIO, font=ctk.CTkFont(size=12),
         ).grid(row=1, column=0, sticky="w", pady=(1, 0))
 
