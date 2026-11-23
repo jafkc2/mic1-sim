@@ -12,7 +12,7 @@ Simulador gráfico da microarquitetura MIC-1.
 - [x] Memória
 - [x] Cache
 - [x] CPU 
-- [ ] Interface gráfica 
+- [x] Interface gráfica 
 
 ## Como baixar o repositório
 
@@ -36,40 +36,30 @@ será solicitado o seu nome de usuário do github e o seu token de acesso.
 * customtkinter
 
 
-## Docker
+## Executando com docker
 
-##### Build a partir do codigo 
+A imagem do Docker está disponível na aba de [Releases](https://github.com/jafkc2/mic1-sim/releases).
 
-```bash
-docker build -t mic1-sim .
-``` 
+> [!Note]
+> No Windows, o Docker precisa ser usado DENTRO DO WSL. Certifique-se de que o Docker está integrado no WSL nas configurações do Docker Desktop. 
+> <img width="1124" height="629" alt="image" src="https://github.com/user-attachments/assets/ebc0ef0a-9e5b-4104-8071-2fcdfd2fa9a4" />
+> Ao ativar a opção, entre no WSL com o comando ```wsl``` no prompt de comando ou no powershell. 
 
-##### Como carregar a partir de uma imagem docker
-
+Após baixar a imagem, carregue-a com o comando a seguir:
 ```bash
 docker load -i mic1-sim.tar.gz
 ```
 
-------------------
-#### Como executar
-
-No Linux:
-
+Executando no Linux:
 ```bash
 xhost +local:docker
 sudo docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix mic1-sim
 ``` 
 
-No Windows:
+Executando no Windows:
 
-O Docker precisa ser integrado ao WSL. Integre-o nas configurações do Docker Desktop.
-
-<img width="1124" height="629" alt="image" src="https://github.com/user-attachments/assets/ebc0ef0a-9e5b-4104-8071-2fcdfd2fa9a4" />
-
-
-Execute os comandos a seguir no prompt de comando ou no powershell:
+Execute os comandos a seguir dentro do WSL:
 
 ```bash
-wsl
 docker run -it --rm -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v /mnt/wslg:/mnt/wslg mic1-sim
 ``` 
